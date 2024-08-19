@@ -1,0 +1,12 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: server
+    volumes:
+      - .:/app
+    tty: true
+    stdin_open: true
+    ports:
+      - 8000:8000
