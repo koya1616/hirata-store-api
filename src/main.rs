@@ -7,7 +7,6 @@ pub mod supabase;
 
 use rocket::data::{Limits, ToByteUnit};
 use rocket::form::Form;
-use rocket::fs::TempFile;
 use rocket::http::Status;
 use rocket::response::status::Custom;
 use rocket::serde::json::Json;
@@ -17,12 +16,6 @@ use crate::models::response::success::SuccessResponseBody;
 use crate::models::response::upload::UploadIpaResponseBody;
 use crate::supabase::storage::file::temp_file_to_vec;
 use crate::supabase::storage::SupabaseStorage;
-
-#[derive(FromForm)]
-struct Upload<'r> {
-  name: String,
-  file: TempFile<'r>,
-}
 
 #[post("/upload", data = "<upload>")]
 async fn upload(mut upload: Form<Upload<'_>>) -> Result<Json<UploadIpaResponseBody>, Custom<Json<ErrorResponse>>> {
