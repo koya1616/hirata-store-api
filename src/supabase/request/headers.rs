@@ -33,6 +33,14 @@ impl Headers {
     self
   }
 
+  pub fn set_user_authorization(&mut self, token: &str) -> &mut Self {
+    self.headers.insert(
+      HeadersTypes::Authorization.as_str(),
+      HeaderValue::from_str(&format!("Bearer {}", token)).unwrap(),
+    );
+    self
+  }
+
   pub fn into_header_map(self) -> HeaderMap {
     self.headers
   }
