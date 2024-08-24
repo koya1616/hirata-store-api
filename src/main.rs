@@ -2,6 +2,7 @@
 extern crate rocket;
 
 pub mod models;
+pub mod runtime_config;
 pub mod supabase;
 
 use rocket::data::{Limits, ToByteUnit};

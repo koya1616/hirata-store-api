@@ -1,18 +1,15 @@
-use dotenv::dotenv;
 use reqwest::{Client, Error, Response};
 use rocket::fs::TempFile;
-use std::env;
 
 use crate::rocket::tokio::io::AsyncReadExt;
+use crate::runtime_config::RuntimeConfig;
 use crate::supabase::request::Headers;
 use crate::supabase::storage::SupabaseStorage;
 
 impl SupabaseStorage {
   pub fn new(bucket_name: String, filename: String) -> Self {
-    dotenv().ok();
-
     SupabaseStorage {
-      supabase_url: env::var("SUPABASE_URL").unwrap(),
+      supabase_url: RuntimeConfig::global().supabase_url.clone(),
       bucket_name,
       filename,
     }

@@ -1,7 +1,6 @@
-use dotenv::dotenv;
 use reqwest::header::{HeaderMap, HeaderValue};
-use std::env;
 
+use crate::runtime_config::RuntimeConfig;
 use crate::supabase::request::{Headers, HeadersTypes};
 
 impl Default for Headers {
@@ -12,17 +11,16 @@ impl Default for Headers {
 
 impl Headers {
   pub fn new() -> Self {
-    dotenv().ok();
-    let supabase_key = env::var("SUPABASE_KEY").unwrap();
+    let config = RuntimeConfig::global();
 
     let mut headers = HeaderMap::new();
     headers.insert(
       HeadersTypes::ApiKey.as_str(),
-      HeaderValue::from_str(&supabase_key).unwrap(),
+      HeaderValue::from_str(&config.supabase_key).unwrap(),
     );
     headers.insert(
       HeadersTypes::Authorization.as_str(),
-      HeaderValue::from_str(&format!("Bearer {}", supabase_key)).unwrap(),
+      HeaderValue::from_str(&format!("Bearer {}", config.supabase_key)).unwrap(),
     );
     Headers { headers }
   }
