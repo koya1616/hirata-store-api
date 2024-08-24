@@ -54,6 +54,13 @@ fn index() -> Json<SuccessResponseBody> {
   Json(SuccessResponseBody::default())
 }
 
+#[catch(401)]
+fn unauthorized_catcher(_status: Status, _request: &Request) -> Json<ErrorResponse> {
+  Json(ErrorResponse {
+    message: "認証トークンが無効または期限切れです。再度ログインしてください。".to_string(),
+  })
+}
+
 #[launch]
 fn rocket() -> _ {
   let limits = Limits::new()
@@ -65,5 +72,7 @@ fn rocket() -> _ {
     .merge(("address", "0.0.0.0"))
     .merge(("limits", limits));
 
-  rocket::custom(figment).mount("/", routes![index, upload])
+  rocket::custom(figment)
+    .mount("/", routes![index, upload])
+    .register("/", catchers![unauthorized_catcher])
 }
