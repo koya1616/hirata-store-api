@@ -7,11 +7,10 @@ use crate::supabase::request::Headers;
 use crate::supabase::storage::SupabaseStorage;
 
 impl SupabaseStorage {
-  pub fn new(bucket_name: String, filename: String) -> Self {
+  pub fn new() -> Self {
     SupabaseStorage {
       supabase_url: RuntimeConfig::global().supabase_url.clone(),
-      bucket_name,
-      filename,
+      bucket_name: "ipa".to_string(),
     }
   }
 
