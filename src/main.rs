@@ -15,23 +15,24 @@ use rocket::Request;
 use crate::models::request::ipa::Upload;
 use crate::models::response::error::{create_error, ErrorResponse};
 use crate::models::response::success::SuccessResponseBody;
-use crate::models::response::upload::UploadIpaResponseBody;
+use crate::models::response::upload::IpaResponseData;
 use crate::supabase::storage::file::temp_file_to_vec;
 use crate::supabase::storage::SupabaseStorage;
 
 #[post("/upload", data = "<upload>")]
-async fn upload(mut upload: Form<Upload<'_>>) -> Result<Json<UploadIpaResponseBody>, Custom<Json<ErrorResponse>>> {
+async fn upload(mut upload: Form<Upload<'_>>) -> Result<Json<IpaResponseData>, Custom<Json<ErrorResponse>>> {
   let buffer = match temp_file_to_vec(&mut upload.file).await {
     Ok(buffer) => buffer,
     Err(_) => return Err(create_error(Status::BadRequest, "ファイルの読み込みに失敗しました。")),
   };
 
-  let storage = SupabaseStorage::new("ipa".to_string(), upload.name.clone());
+  let storage = SupabaseStorage::new();
   match storage.upload(buffer).await {
     Ok(response) => match response.status().is_success() {
-      true => Ok(Json(UploadIpaResponseBody {
-        name: upload.name.clone(),
-      })),
+      true => {
+        let ipa_data = serde_json::from_str(&response.text().await.unwrap()).unwrap();
+        Ok(Json(ipa_data))
+      }
       false => Err(create_error(
         Status::InternalServerError,
         &response.text().await.unwrap(),

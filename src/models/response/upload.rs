@@ -1,6 +1,9 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize)]
-pub struct UploadIpaResponseBody {
-  pub name: String,
+#[derive(Serialize, Deserialize, Debug)]
+pub struct IpaResponseData {
+  #[serde(rename = "Id")]
+  id: String,
+  #[serde(rename = "Key")]
+  key: String,
 }
