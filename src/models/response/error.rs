@@ -5,7 +5,7 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct ErrorResponse {
-  message: String,
+  pub message: String,
 }
 
 impl ErrorResponse {
